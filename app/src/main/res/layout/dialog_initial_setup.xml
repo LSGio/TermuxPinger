@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="24dp"
+    android:scrollbars="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="top|start">
+
+        <TextView
+            android:id="@+id/textExplanation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="8dp"
+            android:text="Welcome to TermuxPinger!\n\nTo use this app, please ensure the following prerequisites are met:\n\n1. Termux app is installed on your device (Github version is better than Play Store version).\n\n2. Your app has the following permissions:\n- com.termux.permission.RUN_COMMAND\n\n3. Termux app has access to:\n- Files and Storage\n- Notifications\n- Draw over other apps (SYSTEM_ALERT_WINDOW)\n- Battery optimizations disabled\n\n4. Termux has allow-external-apps enabled:\n- edit the file ~/.termux/termux.properties from within termux and set allow-external-apps to true (it is usualy commented out)"
+            android:textAppearance="?attr/textAppearanceBodyMedium" />
+
+        <CheckBox
+            android:id="@+id/checkboxShowNextLaunch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="8dp"
+            android:text="Show on next launch"
+            android:checked="true" />
+
+    </LinearLayout>
+
+
+
+</ScrollView>

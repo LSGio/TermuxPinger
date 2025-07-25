@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
-    app:cardElevation="2dp"
-    app:cardCornerRadius="16dp">
+    app:cardCornerRadius="16dp"
+    app:strokeColor="@color/transparent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -60,15 +60,14 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonDelete"
-            style="@style/Widget.Material3.Button.IconButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
-            app:icon="@android:drawable/ic_menu_delete"
-            app:iconTint="?attr/colorError"
+            app:icon="@drawable/round_delete_24"
             app:layout_constraintEnd_toStartOf="@id/buttonPing"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            style="@style/Widget.Material3.Button.IconButton" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonPing"
@@ -76,6 +75,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:text="Ping"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>

@@ -8,8 +8,12 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -34,7 +38,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -47,8 +58,8 @@ public class MainActivity extends AppCompatActivity {
             ipList = new ArrayList<>();
         }
         // Add an example entry if you want it to appear on first launch
-        boolean isFirstLaunch = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(KEY_INITIAL_SETUP_DONE, true);
-        if (isFirstLaunch) {
+        boolean isInitialSetupDone = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(KEY_INITIAL_SETUP_DONE, true);
+        if (isInitialSetupDone) {
             // Use custom layout for the dialog
             View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_initial_setup, null);
             CheckBox checkBox = dialogView.findViewById(R.id.checkboxShowNextLaunch);

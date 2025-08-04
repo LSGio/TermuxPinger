@@ -87,17 +87,18 @@ public class MainActivity extends AppCompatActivity {
         adapter = new IpAddressAdapter(ipList, new IpAddressAdapter.OnPingClickListener() {
             @Override
             public void onPingClick(IpAddressRecord ip) {
-                if (ContextCompat.checkSelfPermission(MainActivity.this, TermuxConstants.PERMISSION_RUN_COMMAND) != PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(MainActivity.this, "Missing RUN_COMMAND permission!!", Toast.LENGTH_SHORT).show();
-                    requestPermissions(new String[]{TermuxConstants.PERMISSION_RUN_COMMAND}, 13);
-                    return;
-                }
                 String ipAddress = ip.getAddress();
                 // Check if Termux is installed
                 PackageManager pm = getPackageManager();
-                Intent launchIntent = pm.getLaunchIntentForPackage("com.termux");
-                if (launchIntent == null) {
-                    Toast.makeText(MainActivity.this, "Termux is not installed.", Toast.LENGTH_LONG).show();
+                try {
+                    pm.getApplicationInfo(TermuxConstants.TERMUX_PACKAGE_NAME, 0);
+                } catch (Exception e) {
+                    toastException(e);
+                    return;
+                }
+                if (ContextCompat.checkSelfPermission(MainActivity.this, TermuxConstants.PERMISSION_RUN_COMMAND) != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(MainActivity.this, "Missing RUN_COMMAND permission!", Toast.LENGTH_SHORT).show();
+                    requestPermissions(new String[]{TermuxConstants.PERMISSION_RUN_COMMAND}, 13);
                     return;
                 }
                 Intent intent = new Intent();
@@ -107,7 +108,12 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra(TermuxConstants.TERMUX_APP.RUN_COMMAND_SERVICE.EXTRA_ARGUMENTS, new String[]{"-c", "5", ipAddress});
                 intent.putExtra(TermuxConstants.TERMUX_APP.RUN_COMMAND_SERVICE.EXTRA_BACKGROUND, false); // Show in Termux UI
                 intent.putExtra(TermuxConstants.TERMUX_APP.RUN_COMMAND_SERVICE.EXTRA_SESSION_ACTION, "com.termux.RUN_COMMAND_RESULT");
-                startService(intent);
+                try {
+                    startService(intent);
+                } catch (Exception e) {
+                    toastException(e);
+                    return;
+                }
             }
             @Override
             public void onDeleteClick(int position, IpAddressRecord ip) {
@@ -168,6 +174,14 @@ public class MainActivity extends AppCompatActivity {
                     .setNegativeButton("Cancel", null)
                     .show();
         });
+    }
+
+    private void toastException(Exception e) {
+        if (e == null) {
+            return;
+        }
+        Toast.makeText(MainActivity.this, "Exception: " + e.getClass().getSimpleName() + ": " + e.getMessage(), Toast.LENGTH_LONG).show();
+        return;
     }
 
     private void saveIpList() {

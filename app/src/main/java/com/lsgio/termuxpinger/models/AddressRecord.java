@@ -6,12 +6,12 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IpAddressRecord {
+public class AddressRecord {
     private String label;
     private String address;
     private List<String> history;
 
-    public IpAddressRecord(String label, String address) {
+    public AddressRecord(String label, String address) {
         setLabel(label);
         setAddress(address);
         setEmptyHistory();
@@ -57,9 +57,9 @@ public class IpAddressRecord {
     }
 
     // Serialize a list of IpAddressRecord to JSON string
-    public static String toJsonList(List<IpAddressRecord> list) {
+    public static String toJsonList(List<AddressRecord> list) {
         JSONArray arr = new JSONArray();
-        for (IpAddressRecord rec : list) {
+        for (AddressRecord rec : list) {
             org.json.JSONObject obj = new org.json.JSONObject();
             try {
                 obj.put("label", rec.getLabel());
@@ -74,8 +74,8 @@ public class IpAddressRecord {
     }
 
     // Deserialize a JSON string to a list of IpAddressRecord
-    public static List<IpAddressRecord> fromJsonString(String json) {
-        List<IpAddressRecord> list = new ArrayList<>();
+    public static List<AddressRecord> fromJsonString(String json) {
+        List<AddressRecord> list = new ArrayList<>();
         try {
             JSONArray arr = new JSONArray(json);
             for (int i = 0; i < arr.length(); i++) {
@@ -89,7 +89,7 @@ public class IpAddressRecord {
                         history.add(histArr.optString(j, ""));
                     }
                 }
-                IpAddressRecord rec = new IpAddressRecord(label, address);
+                AddressRecord rec = new AddressRecord(label, address);
                 rec.setEmptyHistory();
                 for (String h : history) rec.addToHistory(h);
                 list.add(rec);

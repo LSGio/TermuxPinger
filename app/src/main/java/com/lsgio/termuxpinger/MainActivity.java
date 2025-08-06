@@ -22,16 +22,16 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.lsgio.termuxpinger.adapters.IpAddressAdapter;
-import com.lsgio.termuxpinger.models.IpAddressRecord;
+import com.lsgio.termuxpinger.adapters.AddressAdapter;
+import com.lsgio.termuxpinger.models.AddressRecord;
 import com.lsgio.termuxpinger.utils.TermuxConstants;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private IpAddressAdapter adapter;
-    private ArrayList<IpAddressRecord> ipList;
+    private AddressAdapter adapter;
+    private ArrayList<AddressRecord> addressList;
     private static final String KEY_INITIAL_SETUP_DONE = "isInitialSetupDone";
     private static final String KEY_IP_LIST_JSON = "ipListJson";
 
@@ -46,16 +46,15 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Load the list from SharedPreferences
         String json = PreferenceManager.getDefaultSharedPreferences(this).getString(KEY_IP_LIST_JSON, null);
         if (json != null) {
-            ipList = new ArrayList<>(IpAddressRecord.fromJsonString(json));
+            addressList = new ArrayList<>(AddressRecord.fromJsonString(json));
         } else {
-            ipList = new ArrayList<>();
+            addressList = new ArrayList<>();
         }
         // Add an example entry if you want it to appear on first launch
         boolean isInitialSetupDone = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(KEY_INITIAL_SETUP_DONE, true);
@@ -80,14 +79,14 @@ public class MainActivity extends AppCompatActivity {
                     .show();
         }
         
-        if (ipList.isEmpty()) {
-            ipList.add(new IpAddressRecord("Example", "8.8.8.8"));
+        if (addressList.isEmpty()) {
+            addressList.add(new AddressRecord("Example", "8.8.8.8"));
         }
 
-        adapter = new IpAddressAdapter(ipList, new IpAddressAdapter.OnPingClickListener() {
+        adapter = new AddressAdapter(addressList, new AddressAdapter.OnPingClickListener() {
             @Override
-            public void onPingClick(IpAddressRecord ip) {
-                String ipAddress = ip.getAddress();
+            public void onPingClick(AddressRecord address) {
+                String ipAddress = address.getAddress();
                 // Check if Termux is installed
                 PackageManager pm = getPackageManager();
                 try {
@@ -98,14 +97,13 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if (ContextCompat.checkSelfPermission(MainActivity.this, TermuxConstants.PERMISSION_RUN_COMMAND) != PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(MainActivity.this, "Missing RUN_COMMAND permission!", Toast.LENGTH_SHORT).show();
-                    requestPermissions(new String[]{TermuxConstants.PERMISSION_RUN_COMMAND}, 13);
                     return;
                 }
                 Intent intent = new Intent();
                 intent.setAction(TermuxConstants.TERMUX_APP.RUN_COMMAND_SERVICE.ACTION_RUN_COMMAND);
                 intent.setClassName(TermuxConstants.TERMUX_PACKAGE_NAME, TermuxConstants.TERMUX_APP.RUN_COMMAND_SERVICE_NAME);
                 intent.putExtra(TermuxConstants.TERMUX_APP.RUN_COMMAND_SERVICE.EXTRA_COMMAND_PATH, "/data/data/com.termux/files/usr/bin/ping");
-                intent.putExtra(TermuxConstants.TERMUX_APP.RUN_COMMAND_SERVICE.EXTRA_ARGUMENTS, new String[]{"-c", "5", ipAddress});
+                intent.putExtra(TermuxConstants.TERMUX_APP.RUN_COMMAND_SERVICE.EXTRA_ARGUMENTS, new String[]{ipAddress});
                 intent.putExtra(TermuxConstants.TERMUX_APP.RUN_COMMAND_SERVICE.EXTRA_BACKGROUND, false); // Show in Termux UI
                 intent.putExtra(TermuxConstants.TERMUX_APP.RUN_COMMAND_SERVICE.EXTRA_SESSION_ACTION, "com.termux.RUN_COMMAND_RESULT");
                 try {
@@ -116,10 +114,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             @Override
-            public void onDeleteClick(int position, IpAddressRecord ip) {
+            public void onDeleteClick(int position, AddressRecord address) {
                 new MaterialAlertDialogBuilder(MainActivity.this)
                         .setTitle("Delete entry")
-                        .setMessage("Are you sure you want to delete '" + ip.getLabel() + "' (" + ip.getAddress() + ")?")
+                        .setMessage("Are you sure you want to delete '" + address.getLabel() + "' (" + address.getAddress() + ")?")
                         .setPositiveButton("Delete", (dialog, which) -> {
                             adapter.removeIpAddress(position);
                             Toast.makeText(MainActivity.this, "Entry deleted", Toast.LENGTH_SHORT).show();
@@ -129,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
                         .show();
             }
             @Override
-            public void onLogClick(IpAddressRecord ip) {
+            public void onLogClick(AddressRecord address) {
                 Toast.makeText(MainActivity.this, "Under development", Toast.LENGTH_SHORT).show();
             }
         });
@@ -167,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
                             Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
                             return;
                         }
-                        IpAddressRecord newIp = new IpAddressRecord(label, address);
+                        AddressRecord newIp = new AddressRecord(label, address);
                         adapter.addIpAddress(newIp);
                         saveIpList();
                     })
@@ -185,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void saveIpList() {
-        String json = com.lsgio.termuxpinger.models.IpAddressRecord.toJsonList(ipList);
+        String json = AddressRecord.toJsonList(addressList);
         PreferenceManager.getDefaultSharedPreferences(this)
                 .edit()
                 .putString(KEY_IP_LIST_JSON, json)

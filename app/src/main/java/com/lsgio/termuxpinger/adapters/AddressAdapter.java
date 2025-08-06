@@ -10,22 +10,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
 import com.lsgio.termuxpinger.R;
-import com.lsgio.termuxpinger.models.IpAddressRecord;
+import com.lsgio.termuxpinger.models.AddressRecord;
 
 import java.util.List;
 
-public class IpAddressAdapter extends RecyclerView.Adapter<IpAddressAdapter.ViewHolder> {
+public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.ViewHolder> {
     public interface OnPingClickListener {
-        void onPingClick(IpAddressRecord ipAddress);
-        void onDeleteClick(int position, IpAddressRecord ipAddress);
-        void onLogClick(IpAddressRecord ipAddress);
+        void onPingClick(AddressRecord address);
+        void onDeleteClick(int position, AddressRecord address);
+        void onLogClick(AddressRecord address);
     }
 
-    private final List<IpAddressRecord> ipList;
+    private final List<AddressRecord> addressList;
     private final OnPingClickListener listener;
 
-    public IpAddressAdapter(List<IpAddressRecord> ipList, OnPingClickListener listener) {
-        this.ipList = ipList;
+    public AddressAdapter(List<AddressRecord> addressList, OnPingClickListener listener) {
+        this.addressList = addressList;
         this.listener = listener;
     }
 
@@ -39,7 +39,7 @@ public class IpAddressAdapter extends RecyclerView.Adapter<IpAddressAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        IpAddressRecord ip = ipList.get(position);
+        AddressRecord ip = addressList.get(position);
         holder.textLabel.setText(ip.getLabel());
         holder.textAddress.setText(ip.getAddress());
         holder.buttonPing.setOnClickListener(v -> listener.onPingClick(ip));
@@ -51,16 +51,16 @@ public class IpAddressAdapter extends RecyclerView.Adapter<IpAddressAdapter.View
 
     @Override
     public int getItemCount() {
-        return ipList.size();
+        return addressList.size();
     }
 
-    public void addIpAddress(IpAddressRecord ip) {
-        ipList.add(ip);
-        notifyItemInserted(ipList.size() - 1);
+    public void addIpAddress(AddressRecord ip) {
+        addressList.add(ip);
+        notifyItemInserted(addressList.size() - 1);
     }
 
     public void removeIpAddress(int position) {
-        ipList.remove(position);
+        addressList.remove(position);
         notifyItemRemoved(position);
     }
 

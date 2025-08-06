@@ -48,15 +48,14 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonLog"
-            style="@style/Widget.Material3.Button.IconButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
-            app:icon="@android:drawable/ic_dialog_info"
-            app:iconTint="?attr/colorPrimary"
+            app:icon="@drawable/round_info_24"
             app:layout_constraintEnd_toStartOf="@id/buttonDelete"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            style="@style/Widget.Material3.Button.IconButton"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonDelete"

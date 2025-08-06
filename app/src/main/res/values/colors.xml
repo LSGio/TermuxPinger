@@ -6,4 +6,5 @@
     <color name="colorPrimary">#FF1363DC</color>
     <color name="colorSurface">#FFEDF1F4</color>
     <color name="cardViewColor">#FFFDFDFD</color>
+    <color name="colorError">#FFFF3B3B</color>
 </resources>
